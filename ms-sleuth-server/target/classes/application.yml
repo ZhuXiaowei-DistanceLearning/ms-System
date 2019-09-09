@@ -1,0 +1,23 @@
+server:
+  port: 9411
+spring:
+  application:
+    name: zipkin-server
+
+management:
+  metrics:
+    web:
+      server:
+        auto-time-requests: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+eureka:
+  instance:
+    ip-address: 127.0.0.1
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+  client:
+    service-url:
+      defaulZone: http://localhost:10086/eureka

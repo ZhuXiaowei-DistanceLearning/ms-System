@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: hystrix-dashboard
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:10086/eureka
+  instance:
+    ip-address: 127.0.0.1
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+server:
+  port: 9011
+turbine:
+  aggregator:
+    cluster-config: default
+  app-config: item-service
+  cluster-name-expression: new String("default")

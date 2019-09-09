@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script type="text/javascript" th:src="@{//localhost:8081/jquery-1.8.3.js}"></script>
+<body>
+<h1>成功！</h1>
+<!--th:text 将div里面的文本内容设置为 -->
+<div th:text="${hello}">这是显示欢迎信息</div>
+<button onclick="buy()">购买</button>
+</body>
+
+<script type="text/javascript">
+    function buy(){
+        let date = new Date();
+        for (let i = 1; i <= 1500; i++) {
+            var params = {
+                userId: i,
+                productId: 1,
+                quantity: 3
+            };
+            $.post("http://localhost:8081/purchase", params, function (result) {
+            })
+        }
+
+        let date2 = new Date();
+        console.log(date2.getSeconds() - date.getSeconds());
+    }
+   /* for (let i = 0; i <= 1500; i++) {
+
+    }*/
+
+</script>
+
+</html>
