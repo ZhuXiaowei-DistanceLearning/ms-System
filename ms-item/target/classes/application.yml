@@ -35,6 +35,7 @@ spring:
     virtual-host: /leyou
     template:
       exchange: purchase_exchange
+    publisher-confirms: true # 是否确认发送的消息已被消费
 #eureka:
 #  client:
 #    service-url:

@@ -1,19 +1,27 @@
 package com.zxw.service;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.zxw.constant.RedisKey;
 import com.zxw.constant.RedisKeyPrefix;
 import com.zxw.exception.ExceptionUtil;
 import com.zxw.mapper.ProductMapper;
 import com.zxw.mapper.PurchaseMapper;
+import com.zxw.mq.RabbitMQProducer;
+import com.zxw.pojo.MessageVo;
+import com.zxw.pojo.ProductPo;
 import com.zxw.pojo.PurchaseRecoredPo;
 import com.zxw.utils.IdWorker;
-import org.springframework.amqp.core.AmqpTemplate;
+import com.zxw.utils.JsonUtils;
+import com.zxw.utils.MD5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -30,11 +38,12 @@ public class PurchaseService {
     private PurchaseMapper purchaseMapper;
 
     @Autowired
-    private AmqpTemplate amqpTemplate;
-    @Autowired
     private StringRedisTemplate redisTemplate;
     @Autowired
     private IdWorker idWorker;
+
+    @Autowired
+    private RabbitMQProducer mqProducer;
 
     private static ConcurrentHashMap map = new ConcurrentHashMap();
 
@@ -120,13 +129,13 @@ public class PurchaseService {
     /**
      * 添加redis
      */
-    @SentinelResource(value = "purchase", blockHandler = "handleException",blockHandlerClass = {ExceptionUtil.class})
+    @SentinelResource(value = "purchase", blockHandler = "handleException", blockHandlerClass = {ExceptionUtil.class})
     public synchronized boolean purchase(Long userId, Long productId, int quantity) {
         int i = ai.incrementAndGet();
 //        String s = redisTemplate.opsForValue().get(RedisKeyPrefix.BOUGHT_USERS + ai);
         String s = redisTemplate.opsForValue().get(RedisKeyPrefix.SECKILL_INVENTORY + productId);
         Integer total = Integer.valueOf(s);
-        if (total < 3) {
+        if (total < 1) {
             System.out.println("库存不足");
             return false;
         }
@@ -136,22 +145,65 @@ public class PurchaseService {
             return false;
         }
         long start = System.currentTimeMillis();
-        // 获取产品
-        redisTemplate.opsForValue().increment(RedisKeyPrefix.SECKILL_INVENTORY + productId, -3);
-        // 初始化购买记录
-        PurchaseRecoredPo pr = new PurchaseRecoredPo();
-        pr.setId(idWorker.nextId());
-        pr.setNote("购买日志，时间：" + System.currentTimeMillis());
-        pr.setProduct_id(productId);
-
-        pr.setQuantity(quantity);
-        pr.setUser_id(ai.longValue());
-        pr.setPrice(5.0);
-        pr.setSum(15.0);
-        // 插入购买记录
-//        redisTemplate.opsForValue().set(RedisKeyPrefix.BOUGHT_USERS + userId, JsonUtils.serialize(pr));
-        redisTemplate.opsForSet().add(RedisKeyPrefix.BOUGHT_USERS + productId, ai.toString());
+        // 预减库存
+        redisTemplate.opsForValue().increment(RedisKeyPrefix.SECKILL_INVENTORY + productId, -1);
+        MessageVo messageVo = new MessageVo();
+        messageVo.setUserId(userId);
+        messageVo.setGoodsId(productId);
+        messageVo.setQuantity(1);
+        mqProducer.send(messageVo);
         System.out.println("购买成功人数:" + ai.get());
         return true;
+    }
+
+    public String expore(long goodsId) throws ParseException {
+        String s = redisTemplate.opsForValue().get(RedisKeyPrefix.SECKILL_GOODS + goodsId);
+        if (s == null) {
+            ProductPo id = productMapper.findById(goodsId);
+            if (id == null) {
+                return "false";
+            } else {
+                redisTemplate.opsForValue().set(RedisKeyPrefix.SECKILL_GOODS + goodsId, JsonUtils.serialize(id));
+            }
+        }
+        ProductPo po = JsonUtils.parse(s, ProductPo.class);
+        Date date = po.getBeginTime();
+        Date d = new Date();
+        System.out.println(d.getTime());
+        if (date.getTime() < date.getTime()) {
+            return "false";
+        }
+        String md5 = redisTemplate.opsForValue().get(RedisKey.MD5);
+        if (md5 == null) {
+            md5 = MD5.MD5Encode(String.valueOf(idWorker.nextId()));
+            redisTemplate.opsForValue().set(RedisKey.MD5, md5, 60, TimeUnit.SECONDS);
+        }
+        return md5;
+    }
+
+    public String isGrab(long goodsId, long userId) {
+        String result = "0";
+        result = redisTemplate.opsForSet().isMember(RedisKeyPrefix.BOUGHT_USERS + goodsId, String.valueOf(userId)) ? "1" : "0";
+        return result;
+    }
+
+    public boolean insertDate(long goodsId, long userId, long quantity) {
+        try {
+            ProductPo byId = productMapper.findById(goodsId);
+            productMapper.decr((int) quantity, byId.getVersion(), goodsId);
+            PurchaseRecoredPo pr = new PurchaseRecoredPo();
+            pr.setId(idWorker.nextId());
+            pr.setNote("购买日志，时间：" + System.currentTimeMillis());
+            pr.setProduct_id(goodsId);
+            pr.setQuantity((int) quantity);
+            pr.setUser_id(userId);
+            pr.setPrice(5.0);
+            pr.setSum(15.0);
+            purchaseMapper.insert(pr);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

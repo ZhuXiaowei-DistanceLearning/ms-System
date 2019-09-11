@@ -9,11 +9,17 @@
 <h1>成功！</h1>
 <!--th:text 将div里面的文本内容设置为 -->
 <div th:text="${hello}">这是显示欢迎信息</div>
-<button onclick="buy()">购买</button>
+<tr th:each="user : ${msg}" style="margin-top: 10px">
+    <td th:text="${user.productName}">Onions</td>
+    <td th:text="${user.stock}">2.41</td>
+    <button th:id="${user.id}">购买</button>
+    <br/>
+</tr>
+
 </body>
 
 <script type="text/javascript">
-    function buy(){
+    function buy() {
         let date = new Date();
         for (let i = 1; i <= 1500; i++) {
             var params = {
@@ -28,10 +34,65 @@
         let date2 = new Date();
         console.log(date2.getSeconds() - date.getSeconds());
     }
-   /* for (let i = 0; i <= 1500; i++) {
 
-    }*/
+    /* for (let i = 0; i <= 1500; i++) {
+
+     }*/
 
 </script>
+<script th:inline="javascript">
+    const product = /*[[${msg}]]*/ {};
+    console.log(product);
+    $.each(product, function (s, index) {
+        $("#" + index.id).click(function () {
+            $.ajax({
+                type: "get",
+                url: "http://localhost:10010/api/item/exposer/" + index.id,
+                success: function (flag) {
+                    let data = {
+                        userId: 1,
+                        productId: index.id,
+                        quantity: 1,
+                        md5: flag
+                    }
+                    $.ajax({
+                        type: "post",
+                        data: data,
+                        url: "http://localhost:10010/api/item/purchase",
+                        success: function (flag) {
+                            if(flag!="fail"){
+                                $("#"+flag).text("排队中")
+                                setInterval(jishi,1000)
+                                function jishi(){
+                                        $.ajax({
+                                            type: "get",
+                                            url: "http://localhost:10010/api/item/isGrab/"+index.id+"/"+1,
+                                            success: function (flag) {
+                                                if(flag=="1"){
+                                                    $("#"+flag).text("抢购成功")
+                                                    clearInterval(clearInterval(jishi))
+                                                }else{
+                                                    $("#"+flag).text("排队中")
+                                                }
+                                            },
+                                            error: function (flag) {
+                                                console.log(flag)
+                                            }
+                                        })
+                                    }
+                                }
+                        },
+                        error: function (flag) {
+                            alert("error:" + flag)
+                        }
+                    })
+                },
+                error: function (flag) {
+                    alert("error:" + flag)
+                }
+            })
+        })
 
+    })
+</script>
 </html>

@@ -17,4 +17,5 @@ public interface ProductMapper extends BaseMapper<ProductPo> {
 
     @Update("update t_product set stock = stock - ${quantity},version = ${version}+1 where id = ${id} and version = ${version}")
     int decr(@Param("quantity") Integer quantity, @Param("version") Integer version, @Param("id") Long id);
+
 }

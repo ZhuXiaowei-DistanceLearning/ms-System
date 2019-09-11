@@ -1,8 +1,10 @@
 package com.zxw.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.util.concurrent.RateLimiter;
-import com.zxw.constant.RedisKeyPrefix;
+import com.zxw.constant.RedisKey;
 import com.zxw.mapper.ProductMapper;
+import com.zxw.pojo.ProductPo;
 import com.zxw.service.PurchaseService;
 import com.zxw.utils.IdWorker;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -12,10 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Set;
+import java.text.ParseException;
+import java.util.List;
 
 /**
  * @author zxw
@@ -40,19 +44,36 @@ public class PurchaseController {
 
     @GetMapping("/test")
     public String testPage(Model model) {
-        String substring = RedisKeyPrefix.BOUGHT_USERS.substring(0, RedisKeyPrefix.BOUGHT_USERS.length() - 1);
-        Set<String> keys = redisTemplate.keys(substring+":/**");
-        model.addAttribute("msg", "Hello, Thymeleaf!");
+        QueryWrapper<ProductPo> wrapper = new QueryWrapper<ProductPo>();
+        List<ProductPo> po = productMapper.selectList(wrapper);
+        model.addAttribute("msg", po);
         return "index";
+    }
+
+    @GetMapping("/exposer/{goodsId}")
+    @ResponseBody
+    public String expore(@PathVariable("goodsId") long goodsId) throws ParseException {
+        String md5 = purchaseService.expore(goodsId);
+        return md5;
     }
 
     @PostMapping("/purchase")
     @ResponseBody
-    public ResponseEntity<String> purchase(Long userId, Long productId, Integer quantity) {
+    public ResponseEntity<String> purchase(Long userId, Long productId, Integer quantity, String md5) {
+        if (!redisTemplate.opsForValue().get(RedisKey.MD5).equals(md5)) {
+            System.out.println("校验码不正确，已拒绝");
+            return ResponseEntity.ok("校验码不正确，已拒绝");
+        }
         boolean success = purchaseService.purchase(userId, productId, quantity);
-        String message = success ? "抢购成功" : "抢购失败";
+        String message = success ? String.valueOf(productId) : "fail";
         return ResponseEntity.ok(message);
     }
 
+    @GetMapping("/isGrab/{goodsId}/{userId}")
+    @ResponseBody
+    public ResponseEntity<String> isGrab(@PathVariable("goodsId") long goodsId, @PathVariable("userId") long userId) {
+        String result = purchaseService.isGrab(goodsId,userId);
+        return ResponseEntity.ok(result);
+    }
 
 }
