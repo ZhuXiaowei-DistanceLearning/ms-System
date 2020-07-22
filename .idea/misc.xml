@@ -16,6 +16,8 @@
         <option value="$PROJECT_DIR$/ms-goods/ms-goods-service/pom.xml" />
         <option value="$PROJECT_DIR$/ms-goods/ms-interface/pom.xml" />
         <option value="$PROJECT_DIR$/ms-goods/pom.xml" />
+        <option value="$PROJECT_DIR$/wh-interface/pom.xml" />
+        <option value="$PROJECT_DIR$/wh-service/pom.xml" />
       </set>
     </option>
   </component>

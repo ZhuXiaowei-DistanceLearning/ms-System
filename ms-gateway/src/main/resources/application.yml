@@ -4,20 +4,34 @@ spring:
   application:
     name: gateway
   cloud:
-    nacos:
-      discovery:
-        server-addr: 127.0.0.1:8848
-      config:
-        server-addr: 127.0.0.1:8848
-#eureka:
-#  client:
-#    service-url:
-#      defaultZone: http://localhost:10086/eureka
-#  instance:
-#    prefer-ip-address: true # 是否优先使用ip地址代替hostname作为实例的hostName字段值
-#    ip-address: 127.0.0.1
-#    instance-id: ${spring.application.name}:${server.port}
-zuul:
-  routes:
-    item-service: /item/**
-  prefix: /api
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:10086/eureka
+  instance:
+    prefer-ip-address: true # 是否优先使用ip地址代替hostname作为实例的hostName字段值
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
+ribbon:
+  eager-load:
+    enabled: true
+
+order:
+  ribbon:
+    listOfServers: http://order:8081,http://order:8082,http://order:8083
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+    ServerListRefreshInterval: 2000
+    retryableStatusCodes: 500
+    ConnectTimeout: 500
+    ReadTimeout: 20000
+    OkToRetryOnAllOperations: true
+    MaxAutoRetriesNextServer: 2
+    MaxAutoRetries: 0
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMillisecond: 10000 # 超时时间

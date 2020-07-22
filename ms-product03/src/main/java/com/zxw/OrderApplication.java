@@ -1,17 +1,18 @@
 package com.zxw;
 
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * @author zxw
- * @date 2019/9/6 16:13
+ * @date 2020/7/22 14:09
  */
 @SpringCloudApplication
-@EnableEurekaClient
-public class GatewayApplication {
+@EnableDiscoveryClient
+public class OrderApplication {
     public static void main(String[] args) {
-        SpringApplication.run(GatewayApplication.class);
+        SpringApplication.run(OrderApplication.class,args);
     }
 }

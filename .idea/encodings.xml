@@ -3,17 +3,42 @@
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-admin-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-admin-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-admin-server/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-api/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-common" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-config-server" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-gateway" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/ms-goods" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-gateway/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-hystrix-dashboard" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-hystrix-dashboard/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-hystrix-dashboard/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-item" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-item/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-item/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-msm" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-nacos-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-order/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-order/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-product01/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-product01/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-product02/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-product02/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-product03/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-product03/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-registry" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-registry/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-registry/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-sentinel" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-sleuth-server" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-sleuth-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-sleuth-server/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-stock/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-stock/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-warehouse/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-warehouse/src/main/resources" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

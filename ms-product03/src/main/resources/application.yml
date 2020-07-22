@@ -1,0 +1,13 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: product
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:10086/eureka
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}
