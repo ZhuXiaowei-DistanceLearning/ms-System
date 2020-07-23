@@ -2,12 +2,15 @@
 <project version="4">
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-admin-server" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-admin-server/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-admin-server/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-api/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/ms-common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-common/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ms-common/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-config-server" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-gateway" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ms-gateway/src/main/java" charset="UTF-8" />

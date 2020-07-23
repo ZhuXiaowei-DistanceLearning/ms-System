@@ -8,16 +8,15 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ms-config-server" />
-        <module name="ms-product02" />
         <module name="wh-interface" />
         <module name="ms-sleuth-server" />
         <module name="ms-registry" />
         <module name="ms-item" />
-        <module name="ms-product03" />
         <module name="ms-admin-server" />
         <module name="ms-gateway" />
-        <module name="ms-nacos-server" />
         <module name="ms-msm" />
+        <module name="ms-product03" />
+        <module name="ms-product02" />
         <module name="ms-product01" />
         <module name="ms-stock" />
         <module name="wh-service" />
@@ -25,11 +24,14 @@
         <module name="ms-common" />
         <module name="ms-hystrix-dashboard" />
         <module name="ms-warehouse" />
-        <module name="ms-api" />
+        <module name="ms-nacos-server" />
         <module name="ms-order" />
+        <module name="ms-api" />
+        <module name="common" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="ms-common" target="1.8" />
       <module name="ms-goods" target="1.8" />
       <module name="ms-goods-interface" target="1.8" />
       <module name="ms-goods-service" target="1.8" />

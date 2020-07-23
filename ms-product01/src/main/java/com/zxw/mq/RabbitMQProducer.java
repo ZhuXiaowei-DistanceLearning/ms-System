@@ -21,7 +21,5 @@ public class RabbitMQProducer {
     public void send(MessageVo messageVo) {
         String s = JsonUtils.serialize(messageVo);
         amqpTemplate.convertAndSend("purchase_queue", s);
-        boolean sendAcked = false;
-
     }
 }

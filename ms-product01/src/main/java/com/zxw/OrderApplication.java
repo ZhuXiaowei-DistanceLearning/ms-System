@@ -1,8 +1,13 @@
 package com.zxw;
 
+import com.zxw.loadbalancer.IRule;
+import com.zxw.loadbalancer.RoundRobinRule;
+import com.zxw.lock.DistributedLocker;
+import com.zxw.lock.RedissonDistributedLocker;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.annotation.Bean;
 
 /**
  * @author zxw
@@ -13,5 +18,15 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 public class OrderApplication {
     public static void main(String[] args) {
         SpringApplication.run(OrderApplication.class,args);
+    }
+
+    @Bean
+    public IRule roundRobin(){
+        return new RoundRobinRule();
+    }
+
+    @Bean
+    public DistributedLocker distributedLocker(){
+        return new RedissonDistributedLocker();
     }
 }

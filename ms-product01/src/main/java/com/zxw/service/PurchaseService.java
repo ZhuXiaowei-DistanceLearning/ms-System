@@ -2,6 +2,8 @@ package com.zxw.service;
 
 import com.zxw.constant.RedisKey;
 import com.zxw.constant.RedisKeyPrefix;
+import com.zxw.loadbalancer.IRule;
+import com.zxw.lock.DistributedLocker;
 import com.zxw.mapper.ProductMapper;
 import com.zxw.mapper.PurchaseMapper;
 import com.zxw.mq.RabbitMQProducer;
@@ -42,6 +44,12 @@ public class PurchaseService {
 
     @Autowired
     private RabbitMQProducer mqProducer;
+
+    @Autowired
+    private IRule roundRobin;
+
+    @Autowired
+    private DistributedLocker distributedLocker;
 
     private static ConcurrentHashMap map = new ConcurrentHashMap();
 
@@ -128,20 +136,27 @@ public class PurchaseService {
      * 添加redis
      */
     public synchronized boolean purchase(Long userId, Long productId, int quantity) {
+        Object[] keys = redisTemplate.keys(RedisKeyPrefix.MS_REDIS_PREFIX + productId + "_" + "?").toArray();
+        // 如果列表数量为0，则返回空
+        int keyCount = keys.length;
+        if (keyCount == 0) {
+            return false;
+        }
+        int index = roundRobin.choose(keyCount);
+        distributedLocker.lock(keys[index] + "_" + index, TimeUnit.SECONDS, 5);
         int i = ai.incrementAndGet();
 //        String s = redisTemplate.opsForValue().get(RedisKeyPrefix.BOUGHT_USERS + ai);
         String s = redisTemplate.opsForValue().get(RedisKeyPrefix.SECKILL_INVENTORY + productId);
-        Integer total = Integer.valueOf(s);
-        if (total < 1) {
-            System.out.println("库存不足");
-            return false;
-        }
         Boolean s1 = redisTemplate.opsForSet().isMember(RedisKeyPrefix.BOUGHT_USERS + productId, String.valueOf(i));
         if (s1) {
             System.out.println("已经购买过，请勿重复购买");
             return false;
         }
-        long start = System.currentTimeMillis();
+        Integer total = Integer.valueOf(s);
+        if (total <= 0) {
+            System.out.println("库存不足");
+            return false;
+        }
         // 预减库存
         redisTemplate.opsForValue().increment(RedisKeyPrefix.SECKILL_INVENTORY + productId, -1);
         MessageVo messageVo = new MessageVo();
@@ -149,7 +164,6 @@ public class PurchaseService {
         messageVo.setGoodsId(productId);
         messageVo.setQuantity(1);
         mqProducer.send(messageVo);
-        System.out.println("购买成功人数:" + ai.get());
         return true;
     }
 
