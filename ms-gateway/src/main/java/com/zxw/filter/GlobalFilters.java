@@ -13,6 +13,8 @@ import reactor.core.publisher.Mono;
 @Component
 public class GlobalFilters implements GlobalFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        // 用户访问到一定次数后进行拦截
+        // 如果商品已经
         return chain.filter(exchange);
     }
 }

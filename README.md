@@ -71,6 +71,8 @@
 
 解决方案：分段加锁，将商品数量进行拆分，然后使用随机算法将请求分发到不同的库存段中，当前库存为空时，则去寻找下一个分段库存。
 
+eval "local request_times = redis.call('incr',KEYS[1]);if request_times == 1 then redis.call('expire',KEYS[1], ARGV[1]) end;if request_times > tonumber(ARGV[2]) then return 0 end return 1;" 1 test_127.0.0.1 10 3
+4
 # 优化思路以及注意重点
 
 核心：流量控制和性能优化
@@ -80,7 +82,7 @@
 细节：
 
 1. 查询按钮禁止重复提交，拦截无效请求
-2. 页面缓存，限制访问频度，返回相同的页面
+2. 页面缓存，限制访问频度，返回相同的页面。item缓存，返回同一页面
 3. 防止缓存穿透
 4. 容灾，限流，降级
 5. 可扩展架构

@@ -11,7 +11,6 @@
         <module>ms-registry</module>
         <module>ms-gateway</module>
         <module>ms-hystrix-dashboard</module>
-        <module>ms-common</module>
         <module>ms-config-server</module>
         <module>ms-nacos-server</module>
         <module>ms-sentinel</module>
@@ -26,6 +25,8 @@
         <module>ms-warehouse</module>
         <module>ms-api</module>
         <module>ms-order</module>
+        <module>ms-common</module>
+        <module>common</module>
     </modules>
     <packaging>pom</packaging>
     <parent>
@@ -117,4 +118,19 @@
             </snapshots>
         </repository>
     </repositories>
+
+    <profiles>
+        <profile>
+            <id>jdk1.8</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+                <jdk>1.8</jdk>
+            </activation>
+            <properties>
+                <maven.compiler.source>1.8</maven.compiler.source>
+                <maven.compiler.target>1.8</maven.compiler.target>
+                <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+            </properties>
+        </profile>
+    </profiles>
 </project>
