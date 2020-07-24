@@ -60,13 +60,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Hmily(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
     public String orderPay(Integer count, BigDecimal amount) {
-        // 对本地订单数据库修改服务状态为UPDATING
-        // --- Try阶段 ---:不直接完成业务操作，完成一个Try操作，锁定某个资源或者预备类状态
-        // --- Confirm阶段 ---:不直接完成业务操作，完成一个Try操作，锁定某个资源或者预备类状态
-        //
-        // 调用库存服务
-        // 调用积分服务
-        // 调用仓储服务
         final Order order = buildOrder(count, amount);
         final int rows = orderMapper.save(order);
 
@@ -146,6 +139,10 @@ public class OrderServiceImpl implements OrderService {
             order.setNote("购买日志，时间：" + System.currentTimeMillis());
             //demo中 表里面存的用户id为10000
             order.setUserId("10000");
+            int save = orderMapper.save(order);
+            if (save > 0) {
+                paymentService.makePayment(order);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

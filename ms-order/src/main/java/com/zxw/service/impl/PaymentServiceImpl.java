@@ -66,6 +66,13 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Hmily(confirmMethod = "confirmOrderStatus", cancelMethod = "cancelOrderStatus")
     public void makePayment(Order order) {
+        // 对本地订单数据库修改服务状态为UPDATING
+        // --- Try阶段 ---:不直接完成业务操作，完成一个Try操作，锁定某个资源或者预备类状态
+        // --- Confirm阶段 ---
+        //
+        // 调用库存服务
+        // 调用积分服务
+        // 调用仓储服务
         order.setStatus(OrderStatusEnum.PAYING.getCode());
         orderMapper.update(order);
         //检查数据
