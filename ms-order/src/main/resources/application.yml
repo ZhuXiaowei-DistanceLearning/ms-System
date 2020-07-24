@@ -1,0 +1,31 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: product
+  redis:
+    port: 6379
+    database: 1
+    timeout: 5000
+    jedis:
+      pool:
+        max-active: 300
+        max-wait: 2000
+    host: 127.0.0.1
+  rabbitmq:
+    host: 127.0.0.1
+    username: leyou
+    password: leyou
+    virtual-host: /leyou
+    template:
+      exchange: purchase_exchange
+    publisher-confirms: true # 是否确认发送的消息已被消费
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:10086/eureka
+  instance:
+    prefer-ip-address: true
+    ip-address: 127.0.0.1
+    instance-id: ${spring.application.name}:${server.port}

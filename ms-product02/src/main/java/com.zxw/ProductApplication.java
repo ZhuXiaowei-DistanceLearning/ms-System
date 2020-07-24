@@ -4,6 +4,7 @@ import com.zxw.loadbalancer.IRule;
 import com.zxw.loadbalancer.RoundRobinRule;
 import com.zxw.lock.DistributedLocker;
 import com.zxw.lock.RedissonDistributedLocker;
+import com.zxw.utils.IdWorker;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -15,9 +16,9 @@ import org.springframework.context.annotation.Bean;
  */
 @SpringCloudApplication
 @EnableDiscoveryClient
-public class OrderApplication {
+public class ProductApplication {
     public static void main(String[] args) {
-        SpringApplication.run(OrderApplication.class,args);
+        SpringApplication.run(ProductApplication.class,args);
     }
 
     @Bean
@@ -29,4 +30,8 @@ public class OrderApplication {
     public DistributedLocker distributedLocker(){
         return new RedissonDistributedLocker();
     }
+
+    @Bean
+    public IdWorker idWorker(){return new IdWorker();}
+
 }

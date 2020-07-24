@@ -30,7 +30,6 @@ public class RedissonDistributedLocker implements DistributedLocker {
     }
 
     public void lock(String lockKey, TimeUnit unit, int timeout) {
-
         RLock lock = redissonClient.getLock(lockKey);
         lock.lock(timeout, unit);
     }
