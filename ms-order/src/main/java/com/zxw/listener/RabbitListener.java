@@ -30,6 +30,6 @@ public class RabbitListener {
         MessageVo vo = JsonUtils.parse(msg, MessageVo.class);
         System.out.println("Receiver:[" + msg + "]");
         redisTemplate.opsForSet().add(RedisKeyPrefix.BOUGHT_USERS + vo.getGoodsId(), String.valueOf(vo.getUserId()));
-        orderService.insertDate(vo.getGoodsId(), vo.getUserId(), vo.getQuantity());
+        orderService.insertOrder(vo.getGoodsId(), vo.getUserId(), vo.getQuantity());
     }
 }

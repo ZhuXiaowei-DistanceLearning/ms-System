@@ -122,34 +122,35 @@ public class PurchaseService {
 //    }
 
 
-    @Transactional(rollbackFor = Exception.class)
     /**
      * 添加redis
      */
-    public synchronized boolean purchase(Long userId, Long productId, int quantity) {
+    @Transactional(rollbackFor = Exception.class)
+    public boolean purchase(Long userId, Long productId, int quantity) {
         Object[] keys = redisTemplate.keys(RedisKeyPrefix.MS_REDIS_PREFIX + productId + "_" + "?").toArray();
-        // 如果列表数量为0，则返回空
+        // 获取分布式锁
         int keyCount = keys.length;
         if (keyCount == 0) {
             return false;
         }
         int index = roundRobin.choose(keyCount);
         distributedLocker.lock(keys[index] + "_" + index, TimeUnit.SECONDS, 5);
-        int i = ai.incrementAndGet();
 //        String s = redisTemplate.opsForValue().get(RedisKeyPrefix.BOUGHT_USERS + ai);
-        String s = redisTemplate.opsForValue().get(RedisKeyPrefix.SECKILL_INVENTORY + productId);
-        Boolean s1 = redisTemplate.opsForSet().isMember(RedisKeyPrefix.BOUGHT_USERS + productId, String.valueOf(i));
+        Integer total = Integer.valueOf(redisTemplate.opsForValue().get(RedisKeyPrefix.SECKILL_INVENTORY + productId));
+        Boolean s1 = redisTemplate.opsForSet().isMember(RedisKeyPrefix.BOUGHT_USERS + productId, String.valueOf(userId));
+        // 购买用户
         if (s1) {
             System.out.println("已经购买过，请勿重复购买");
             return false;
         }
-        Integer total = Integer.valueOf(s);
+        // 库存总量
         if (total <= 0) {
             System.out.println("库存不足");
             return false;
         }
         // 预减库存
         redisTemplate.opsForValue().increment(RedisKeyPrefix.SECKILL_INVENTORY + productId, -1);
+        // 异步下单
         MessageVo messageVo = new MessageVo();
         messageVo.setUserId(userId);
         messageVo.setGoodsId(productId);

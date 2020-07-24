@@ -27,6 +27,8 @@
         <module>ms-order</module>
         <module>ms-common</module>
         <module>common</module>
+        <module>ms-inventory</module>
+        <module>ms-account</module>
     </modules>
     <packaging>pom</packaging>
     <parent>
@@ -52,6 +54,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.dromara</groupId>
+                <artifactId>hmily-springcloud</artifactId>
+                <version>2.0.6-RELEASE</version>
+            </dependency>
             <!-- springCloud -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>

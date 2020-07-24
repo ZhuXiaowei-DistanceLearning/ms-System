@@ -20,9 +20,9 @@ import java.sql.Timestamp;
 public class PurchaseRecoredPo {
     private static final long serialVersionUID = 328831114776063574L;
     @TableId(type = IdType.AUTO)
-    private Long id;
-    private Long user_id;
-    private Long product_id;
+    private int id;
+    private int user_id;
+    private int product_id;
     private double price;
     private int quantity;
     private double sum;

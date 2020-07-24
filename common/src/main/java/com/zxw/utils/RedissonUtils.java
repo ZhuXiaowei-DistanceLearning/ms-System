@@ -32,7 +32,7 @@ public class RedissonUtils {
         return num;
     }
 
-    public static String buildLua(String statement, String keyNum, String key, String... params) {
+    private static String buildLua(String statement, String keyNum, String key, String... params) {
         StringBuffer luaScript = new StringBuffer();
         luaScript.append(statement)
                 .append(" " + keyNum)

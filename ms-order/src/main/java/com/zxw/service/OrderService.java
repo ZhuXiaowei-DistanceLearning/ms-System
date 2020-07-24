@@ -1,58 +1,67 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.zxw.service;
 
-import com.zxw.mapper.ProductMapper;
-import com.zxw.mapper.PurchaseMapper;
-import com.zxw.pojo.ProductPo;
-import com.zxw.pojo.PurchaseRecoredPo;
-import com.zxw.utils.IdWorker;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Service;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.zxw.entity.Order;
+
+import java.math.BigDecimal;
 
 /**
- * @author zxw
- * @date 2019/9/3 15:24
+ * OrderService.
+ *
+ * @author xiaoyu
  */
-@Service
-public class OrderService {
-    static AtomicInteger ai = new AtomicInteger(0);
-    @Autowired
-    private ProductMapper productMapper;
+public interface OrderService {
 
-    @Autowired
-    private PurchaseMapper purchaseMapper;
+    /**
+     * 创建订单并且进行扣除账户余额支付，并进行库存扣减操作.
+     *
+     * @param count  购买数量
+     * @param amount 支付金额
+     * @return string
+     */
+    String orderPay(Integer count, BigDecimal amount);
 
-    @Autowired
-    private StringRedisTemplate redisTemplate;
-    @Autowired
-    private IdWorker idWorker;
+    /**
+     * 模拟在订单支付操作中，库存在try阶段中的库存异常.
+     *
+     * @param count  购买数量
+     * @param amount 支付金额
+     * @return string
+     */
+    String mockInventoryWithTryException(Integer count, BigDecimal amount);
 
-    private static ConcurrentHashMap map = new ConcurrentHashMap();
+    /**
+     * 模拟在订单支付操作中，库存在try阶段中的timeout.
+     *
+     * @param count  购买数量
+     * @param amount 支付金额
+     * @return string
+     */
+    String mockInventoryWithTryTimeout(Integer count, BigDecimal amount);
 
-    public boolean insertDate(long goodsId, long userId, long quantity) {
-        // 订单服务
-        // 库存服务
-        // 积分服务
-        // 仓储服务
-        try {
-            ProductPo byId = productMapper.findById(goodsId);
-            productMapper.decr((int) quantity, byId.getVersion(), goodsId);
-            PurchaseRecoredPo pr = new PurchaseRecoredPo();
-            pr.setId(idWorker.nextId());
-            pr.setNote("购买日志，时间：" + System.currentTimeMillis());
-            pr.setProduct_id(goodsId);
-            pr.setQuantity((int) quantity);
-            pr.setUser_id(userId);
-            pr.setPrice(5.0);
-            pr.setSum(15.0);
-            purchaseMapper.insert(pr);
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+    /**
+     * 更新订单状态.
+     *
+     * @param order 订单实体类
+     */
+    void updateOrderStatus(Order order);
+
+    void insertOrder(int goodsId, int userId, int quantity);
 }

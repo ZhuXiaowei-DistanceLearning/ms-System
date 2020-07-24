@@ -1,7 +1,7 @@
 package com.zxw;
 
 import com.zxw.loadbalancer.IRule;
-import com.zxw.loadbalancer.RoundRobinRule;
+import com.zxw.loadbalancer.RandomRule;
 import com.zxw.lock.DistributedLocker;
 import com.zxw.lock.RedissonDistributedLocker;
 import com.zxw.utils.IdWorker;
@@ -23,7 +23,7 @@ public class ProductApplication {
 
     @Bean
     public IRule roundRobin(){
-        return new RoundRobinRule();
+        return new RandomRule();
     }
 
     @Bean

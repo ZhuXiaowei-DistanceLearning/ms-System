@@ -4,6 +4,20 @@ spring:
   application:
     name: gateway
   cloud:
+    gateway:
+      discovery:
+        locator:
+          lower-case-service-id: true
+      globalcors:
+        '[/**]':
+          allowedOrigins: "*"
+          allowedMethods:
+            - GET
+            - PUT
+            - POST
+            - DELETE
+            - OPTIONS
+
 eureka:
   client:
     service-url:
