@@ -89,6 +89,8 @@ eval "local request_times = redis.call('incr',KEYS[1]);if request_times == 1 the
 6. 全链路高可用
 7. 高并发架构
 8. 高性能架构
+8. 队列消息丢失
+9. redis高可用
 
 # 问题解决
 

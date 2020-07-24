@@ -27,7 +27,6 @@
         <module>ms-order</module>
         <module>ms-common</module>
         <module>common</module>
-        <module>ms-inventory</module>
         <module>ms-account</module>
     </modules>
     <packaging>pom</packaging>

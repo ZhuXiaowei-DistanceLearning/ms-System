@@ -1,6 +1,5 @@
 package com.zxw.utils;
 
-import com.zxw.consts.RedisKey;
 import org.redisson.Redisson;
 import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
@@ -29,10 +28,10 @@ public class RedissonUtils {
      *                 if request_times == 1 then redis.call('expire',KEYS[1], ARGV[1]) end;
      * @return 0:false(超过访问次数) 1:true
      */
-    public static Integer IpLimit(String redisKey, String key, String limitNum) {
-        redissonClient.getScript().eval(RScript.Mode.READ_WRITE, "local request_times = redis.call('hincrby',KEYS[1],ARGV[1],1);if request_times > tonumber(ARGV[2]) then return 0 end return 1;", RScript.ReturnType.VALUE, Collections.singletonList(RedisKey.IPLIMT), redisKey, key, limitNum);
+    public static Long IpLimit(String redisKey, String key, long limitNum) {
+        Object eval = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, "local request_times = redis.call('hincrby',KEYS[1],ARGV[1],1);local limitNum = 3;if request_times > limitNum then return 0 end return 1;", RScript.ReturnType.INTEGER, Collections.singletonList(redisKey), key, limitNum);
 //        String num = redissonClient.getScript().eval(buildLua("local request_times = redis.call('hincrby',KEYS[1],ARGV[1],1);if request_times > tonumber(ARGV[2]) then return 0 end return 1;", "1", redisKey, key, limitNum));
-        return Integer.valueOf("");
+        return (Long)eval;
     }
 
     private static String buildLua(String statement, String keyNum, String key, String... params) {
