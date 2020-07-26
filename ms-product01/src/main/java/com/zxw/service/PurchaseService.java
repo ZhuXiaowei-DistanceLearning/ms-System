@@ -17,9 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.util.Date;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author zxw
@@ -27,7 +25,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Service
 public class PurchaseService {
-    static AtomicInteger ai = new AtomicInteger(0);
     @Autowired
     private StringRedisTemplate redisTemplate;
     @Autowired
@@ -42,7 +39,6 @@ public class PurchaseService {
     @Autowired
     private DistributedLocker distributedLocker;
 
-    private static ConcurrentHashMap map = new ConcurrentHashMap();
 
    /* @Transactional(rollbackFor = Exception.class)
     public synchronized boolean purchase(Long userId, Long productId, int quantity) {
@@ -146,6 +142,7 @@ public class PurchaseService {
         // 库存总量
         if (total <= 0) {
             System.out.println("库存不足");
+            // 秒杀结束
             return false;
         }
         // 预减库存

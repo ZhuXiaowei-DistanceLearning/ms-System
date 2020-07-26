@@ -2,6 +2,7 @@ package com.zxw.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zxw.pojo.ProductPo;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -10,6 +11,7 @@ import org.apache.ibatis.annotations.Update;
  * @author zxw
  * @date 2019/9/3 15:22
  */
+@Mapper
 public interface ProductMapper extends BaseMapper<ProductPo> {
 
     @Select("select * from t_product where id = ${productId}")

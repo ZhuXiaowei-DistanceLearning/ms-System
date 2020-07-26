@@ -24,10 +24,11 @@ public class GlobalFilters implements GlobalFilter {
 
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String productId = exchange.getRequest().getQueryParams().getFirst("productId");
+        String userId = exchange.getRequest().getQueryParams().getFirst("userId");
         InetSocketAddress remoteAddress = exchange.getRequest().getRemoteAddress();
         // 访问限流
-        Long limit = RedissonUtils.IpLimit(RedisKey.IPLIMT, remoteAddress.getHostName(), 3);
-        if(limit == 0){
+        Long limit = RedissonUtils.IpLimit(RedisKey.IPLIMT, userId, 3);
+        if (limit == 0) {
             System.out.println("达到限制访问次数，已限制");
             return chain.filter(exchange);
         }
